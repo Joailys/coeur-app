@@ -1,30 +1,17 @@
 name: Build Mac App
 on: [push]
-
 jobs:
   build:
-    runs-on: macos-latest
-    permissions:
-      contents: write  # Nécessaire pour v4
-
+    runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
+        with: 
+          python-version: '3.9'
+      - run: |
+          pip install pyinstaller
+          pyinstaller --windowed --target-arch x86_64 --name Surprise coeur.py
+      - uses: actions/upload-artifact@v4
         with:
-          python-version: '3.11'
-          
-      - name: Install dependencies
-        run: pip install pyinstaller
-          
-      - name: Build application
-        run: pyinstaller --windowed --name "Surprise" coeur.py
-          
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: mac-app-${{ github.run_id }}  # Nom unique obligatoire
-          path: |
-            dist/Surprise.app
-            dist/Surprise
+          name: mac-app-${{ github.run_id }}
+          path: dist/Surprise.app
