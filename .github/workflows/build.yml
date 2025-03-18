@@ -1,0 +1,17 @@
+name: Build Mac App
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: 
+          python-version: '3.11'
+      - run: |
+          pip install pyinstaller
+          pyinstaller --windowed --name Surprise coeur.py
+      - uses: actions/upload-artifact@v3
+        with:
+          name: mac-app
+          path: dist/Surprise.app
